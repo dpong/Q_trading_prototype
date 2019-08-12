@@ -8,7 +8,7 @@ ticker, window_size = 'AAPL', 10
 #要給checkpoint個路徑
 m_path = "models/{}/training.ckpt".format(ticker)
 #丟給agent初始化
-agent = Agent(ticker, window_size, m_path)
+agent = Agent(ticker, window_size, m_path, is_eval=True)
 
 #取得歷史資料，沒給時間就是從有資料到最近
 data = []
@@ -35,12 +35,10 @@ for t in range(l):
 
 	elif action == 2 and len(agent.inventory) > 0: # sell
 		bought_price = agent.inventory.pop(0)
-		reward = max(data[t] - bought_price, 0)
 		total_profit += data[t] - bought_price
 		print("Sell: " + formatPrice(data[t]) + " | Profit: " + formatPrice(data[t] - bought_price))
 
 	done = True if t == l - 1 else False
-	agent.memory.append((state, action, reward, next_state, done))
 	state = next_state
 
 	if done:

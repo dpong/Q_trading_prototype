@@ -2,7 +2,7 @@ import sys
 from agent.agent import Agent
 from functions import *
 
-ticker, window_size, episode_count = 'AAPL', 10, 1
+ticker, window_size, episode_count = 'AAPL', 10, 10
 #要給checkpoint個路徑
 m_path = "models/{}/training.ckpt".format(ticker)
 #丟給agent初始化
@@ -37,7 +37,7 @@ for e in range(1, episode_count + 1):
 
 		elif action == 2 and len(agent.inventory) > 0: # sell
 			bought_price = agent.inventory.pop(0)
-			reward = max(data[t] - bought_price, 0)
+			reward = data[t] - bought_price
 			total_profit += data[t] - bought_price
 			print("Sell: " + formatPrice(data[t]) + " | Profit: " + formatPrice(data[t] - bought_price)+ " | Total Profit: " + formatPrice(total_profit))
 
@@ -46,6 +46,7 @@ for e in range(1, episode_count + 1):
 		state = next_state
 
 		if done:
+			agent.update_target_model()
 			print("-"*80)
 			print("Episode " + str(e) + "/" + str(episode_count)+ " | Total Profit: " + formatPrice(total_profit))
 			print("-"*80)
